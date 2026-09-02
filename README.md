@@ -2,6 +2,8 @@
 
 Interaktive Demo zur Ernährungsoptimierung: Aus einer Beispiel-Ist-Ernährung werden Lebensmittelmengen so angepasst, dass Kalorien- und Makronährstoffziele erreicht werden — mit möglichst geringer Abweichung von den gewohnten Mengen.
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-nutrition-demo.streamlit.app/)**
+
 ## Worum geht's?
 
 Angeregt durch Schäfer et al. (2025, PLOS ONE), *"A methodological framework for deriving the German food-based dietary guidelines 2024"* — die Methodik hinter dem Update der offiziellen deutschen Ernährungsempfehlungen. Dort wird Diätoptimierung (Zielprogrammierung / Goal Programming) genutzt: Lebensmittelgruppen als Entscheidungsvariablen, Minimierung der Abweichung von der beobachteten Ist-Ernährung unter Nährstoff- und Mengen-Nebenbedingungen, verglichen über vier Zielfunktionstypen (linear/quadratisch × absolut/relativ).
