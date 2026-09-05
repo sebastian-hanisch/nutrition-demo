@@ -19,6 +19,11 @@ def diet_comparison_figure(baseline, optimized, title):
         xaxis_tickangle=-45, legend=dict(orientation="h", y=1.1), height=450,
         margin=dict(t=80),
     )
+    # fixedrange auf beiden Achsen: verhindert Pinch-Zoom/Drag-Pan im Chart,
+    # damit auf Touch-Geräten stattdessen die Seite normal gescrollt wird
+    # (Hover-Tooltips bleiben davon unberührt).
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(fixedrange=True)
     return fig
 
 
@@ -33,6 +38,8 @@ def macro_figure(targets, totals_by_label):
         title="Makronährstoffe je Zielfunktion (g/Tag)", barmode="group",
         yaxis_title="g/Tag", legend=dict(orientation="h", y=1.15), height=400,
     )
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(fixedrange=True)
     return fig
 
 
@@ -49,4 +56,6 @@ def sparsity_figure(comparison_rows):
         title="Unveränderte Lebensmittel je Zielfunktionstyp", yaxis_title="Anzahl unverändert",
         yaxis_range=[0, n_foods * 1.15], height=380,
     )
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(fixedrange=True)
     return fig
