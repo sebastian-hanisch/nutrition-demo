@@ -147,7 +147,7 @@ if not main_result.success:
 
 st.plotly_chart(
     diet_comparison_figure(baseline, main_result.x, f"Basis- vs. optimierte Ernährung ({objective_label})"),
-    use_container_width=True,
+    use_container_width=True, key="diet_comparison_main",
 )
 
 pdf_bytes = generate_diet_plan_pdf(goal, bodyweight, targets, baseline, main_result, coeffs, objective_label)
@@ -172,17 +172,20 @@ Ernährungsguidelines-Update empirisch beobachtet (siehe Expander "Wie funktioni
 )
 
 comparison_rows = [comparison_row(label, baseline, coeffs, results[label]) for label in OBJECTIVE_TYPES]
-st.plotly_chart(sparsity_figure(comparison_rows), use_container_width=True)
+st.plotly_chart(sparsity_figure(comparison_rows), use_container_width=True, key="sparsity")
 
 with st.expander("🔧 Vollständiger Vergleich aller vier Zielfunktionstypen", expanded=False):
     st.dataframe(pd.DataFrame(comparison_rows), use_container_width=True, hide_index=True)
-    st.plotly_chart(macro_figure(targets, {label: nutrient_totals(results[label].x, coeffs) for label in OBJECTIVE_TYPES}), use_container_width=True)
+    st.plotly_chart(
+        macro_figure(targets, {label: nutrient_totals(results[label].x, coeffs) for label in OBJECTIVE_TYPES}),
+        use_container_width=True, key="macro_comparison",
+    )
 
     tabs = st.tabs(list(OBJECTIVE_TYPES.keys()))
     for tab, label in zip(tabs, OBJECTIVE_TYPES.keys()):
         with tab:
             r = results[label]
-            st.plotly_chart(diet_comparison_figure(baseline, r.x, label), use_container_width=True)
+            st.plotly_chart(diet_comparison_figure(baseline, r.x, label), use_container_width=True, key=f"diet_comparison_{label}")
 
 st.markdown("---")
 
