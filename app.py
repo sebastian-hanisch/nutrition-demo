@@ -80,19 +80,19 @@ st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
 preset_col1, preset_col2, preset_col3 = st.columns(3)
 with preset_col1:
     st.button(
-        "🥗 Abnehmen (70 kg)", use_container_width=True,
+        "🥗 Abnehmen (70 kg)", width="stretch",
         on_click=apply_preset, args=("Abnehmen (Kaloriendefizit)", 70.0, 0.2, 42),
         help="Kaloriendefizit, hoher Proteinanteil.",
     )
 with preset_col2:
     st.button(
-        "⚖️ Erhaltung (75 kg)", use_container_width=True,
+        "⚖️ Erhaltung (75 kg)", width="stretch",
         on_click=apply_preset, args=("Erhaltung", 75.0, 0.15, 7),
         help="Kalorien und Makros auf Erhaltungsniveau.",
     )
 with preset_col3:
     st.button(
-        "🏋️ Muskelaufbau (85 kg)", use_container_width=True,
+        "🏋️ Muskelaufbau (85 kg)", width="stretch",
         on_click=apply_preset, args=("Muskelaufbau (Kalorienüberschuss)", 85.0, 0.25, 3),
         help="Kalorienüberschuss, hoher Proteinanteil - stärkere Abweichung von der Ist-Ernährung.",
     )
@@ -116,7 +116,7 @@ with st.sidebar:
     seed_lo, seed_hi = bounds("seed_input")
     seed = st.number_input("Zufalls-Seed", min_value=seed_lo, max_value=seed_hi, step=1, key="seed_input")
     st.button(
-        "🎲 Neue Beispiel-Ernährung generieren", use_container_width=True, on_click=randomize_seed,
+        "🎲 Neue Beispiel-Ernährung generieren", width="stretch", on_click=randomize_seed,
         help="Würfelt einen neuen Zufalls-Seed für die Ist-Ernährung.",
     )
 
@@ -147,7 +147,7 @@ if not main_result.success:
 
 st.plotly_chart(
     diet_comparison_figure(baseline, main_result.x, f"Basis- vs. optimierte Ernährung ({objective_label})"),
-    use_container_width=True, key="diet_comparison_main",
+    width="stretch", key="diet_comparison_main",
 )
 
 pdf_bytes = generate_diet_plan_pdf(goal, bodyweight, targets, baseline, main_result, coeffs, objective_label)
@@ -172,20 +172,20 @@ Ernährungsguidelines-Update empirisch beobachtet (siehe Expander "Wie funktioni
 )
 
 comparison_rows = [comparison_row(label, baseline, coeffs, results[label]) for label in OBJECTIVE_TYPES]
-st.plotly_chart(sparsity_figure(comparison_rows), use_container_width=True, key="sparsity")
+st.plotly_chart(sparsity_figure(comparison_rows), width="stretch", key="sparsity")
 
 with st.expander("🔧 Vollständiger Vergleich aller vier Zielfunktionstypen", expanded=False):
-    st.dataframe(pd.DataFrame(comparison_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(comparison_rows), width="stretch", hide_index=True)
     st.plotly_chart(
         macro_figure(targets, {label: nutrient_totals(results[label].x, coeffs) for label in OBJECTIVE_TYPES}),
-        use_container_width=True, key="macro_comparison",
+        width="stretch", key="macro_comparison",
     )
 
     tabs = st.tabs(list(OBJECTIVE_TYPES.keys()))
     for tab, label in zip(tabs, OBJECTIVE_TYPES.keys()):
         with tab:
             r = results[label]
-            st.plotly_chart(diet_comparison_figure(baseline, r.x, label), use_container_width=True, key=f"diet_comparison_{label}")
+            st.plotly_chart(diet_comparison_figure(baseline, r.x, label), width="stretch", key=f"diet_comparison_{label}")
 
 st.markdown("---")
 
