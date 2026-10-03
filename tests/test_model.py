@@ -13,8 +13,8 @@ import pytest
 APP_DIR = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.abspath(APP_DIR))
 
-from nutrition_constants import FOODS, GOAL_PRESETS, OBJECTIVE_TYPES
-from nutrition_evaluation import change_counts, nutrient_totals, sum_absolute_change
+from nutrition_constants import FOODS, GOAL_PRESETS, MIN_REFERENCE_G, OBJECTIVE_TYPES
+from nutrition_evaluation import change_counts, mean_relative_change_pct, nutrient_totals, sum_absolute_change
 from nutrition_model import baseline_diet, food_bounds, nutrient_matrix, nutrient_targets
 from nutrition_pdf_export import generate_diet_plan_pdf
 from nutrition_solver import solve, solve_all
@@ -209,3 +209,28 @@ def test_pdf_export_returns_bytes(coeffs, bounds_):
     pdf_bytes = generate_diet_plan_pdf("Erhaltung", 80.0, targets, baseline, result, coeffs, "linear-relativ")
     assert isinstance(pdf_bytes, bytes)
     assert pdf_bytes[:4] == b"%PDF"
+
+
+def test_mean_relative_change_uses_shared_reference_for_zero_baseline_foods():
+    """Zwei Lebensmittel: eines mit 0 g Basis (+5 g), eines mit 100 g Basis (unverändert).
+    Referenz max(Basis, MIN_REFERENCE_G): 5/20 = 25 % und 0 % -> Mittel 12,5 % (mit 1-g-Referenz
+    wären es 250 %, ein Wert, der von den Nullmengen-Lebensmitteln dominiert würde)."""
+    baseline = np.array([0.0, 100.0])
+    x = np.array([5.0, 100.0])
+    assert MIN_REFERENCE_G == 20.0
+    assert mean_relative_change_pct(baseline, x) == pytest.approx(12.5)
+
+
+def test_mean_relative_change_is_zero_when_unchanged():
+    baseline = baseline_diet(seed=42, variation=0.2)
+    assert mean_relative_change_pct(baseline, baseline) == 0.0
+
+
+def test_mean_relative_change_stays_moderate_for_sparse_linear_solution(coeffs, bounds_):
+    """Regression: linear-absolut ändert nur wenige Lebensmittel; die mittlere relative
+    Änderung darf nicht durch die 0-g-Lebensmittel auf dreistellige Prozentwerte steigen."""
+    lower, upper = bounds_
+    targets = nutrient_targets("Erhaltung", 80.0)
+    baseline = baseline_diet(seed=42, variation=0.2)
+    result = solve(OBJECTIVE_TYPES["linear-absolut"], baseline, coeffs, lower, upper, targets)
+    assert mean_relative_change_pct(baseline, result.x) < 100.0

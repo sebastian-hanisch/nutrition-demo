@@ -16,7 +16,7 @@ Kernthema der Demo: **wie stark verändert allein die Form der Zielfunktion die 
 - Reale Einzel-Lebensmittel (25 Stück) statt aggregierter FoodEx2-Gruppen — didaktisch näher an Ernährungs-/Fitness-Alltagsfragen
 - Ziel-Presets (Abnehmen/Erhaltung/Muskelaufbau) leiten Kalorien-/Makroziele aus Körpergewicht ab (grobe Fitness-Faustregeln, keine medizinische Beratung)
 - Lineare Varianten: SciPy `linprog` (HiGHS). Quadratische Varianten: SciPy `minimize` (SLSQP, trust-constr als Fallback)
-- Vergleichskennzahlen wie im Originalpaper: Summe absoluter/relativer Änderung, Anzahl unverändert/gestiegen/gesunken/verschwunden
+- Vergleichskennzahlen angelehnt an das Originalpaper: Summe absoluter und mittlere relative Änderung (Referenz wie in den relativen Zielfunktionen mindestens 20 g), Anzahl unverändert/gestiegen/gesunken/verschwunden
 - PDF-Export, Permalink
 - Mathematische Herleitung (inkl. Bezug zu L1/L2-Regularisierung) im Expander „Mathematische Formulierung“
 

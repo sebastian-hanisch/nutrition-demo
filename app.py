@@ -123,8 +123,8 @@ with st.sidebar:
     st.markdown("**Zielfunktion für Hauptergebnis**")
     objective_label = st.selectbox(
         "Zielfunktionstyp", options=list(OBJECTIVE_TYPES.keys()), key="objective_select",
-        help="linear-relativ entspricht am ehesten dem im Paper favorisierten Kompromiss: "
-             "wenige, aber dafür prozentual größere Änderungen.",
+        help="linear-relativ ändert nur wenige Lebensmittel, dafür prozentual deutlicher "
+             "(im Paper ließen die linear-relativen Modelle die meisten Lebensmittelgruppen unverändert).",
     )
 
 sync_query_params(goal, bodyweight, variation, int(seed), objective_label)
@@ -215,15 +215,16 @@ der Basis-Ernährung mit 0 g geführt werden, bleiben auch nach der Variation be
 **Nährstoffziele:** Kalorien-, Protein- und Fettziele werden aus Körpergewicht und Ziel-Preset
 (Abnehmen/Erhaltung/Muskelaufbau) über gängige Fitness-Faustregeln abgeleitet (kcal/Protein/Fett
 je kg Körpergewicht), Kohlenhydrate füllen den verbleibenden Kalorienbedarf. Kalorien, Fett und
-Kohlenhydrate werden als **Band** (z. B. Ziel +/- 3-35%) vorgegeben, Protein nur als **Mindestwert**
-- mehr Protein ist im Modell nie ein Problem.
+Kohlenhydrate werden als **Band** vorgegeben (Kalorien Ziel +/- 3 %, Fett -25 %/+35 %,
+Kohlenhydrate +/- 35 %), Protein nur als **Mindestwert** - mehr Protein ist im Modell nie ein
+Problem (nach oben begrenzen es nur das Kalorienband und die Mengenobergrenzen).
 
 **Vier Zielfunktionstypen (der eigentliche Kern der Demo):** Für jedes Lebensmittel $i$ wird die
 Abweichung $x_i - \\text{baseline}_i$ entweder **linear** (Betrag) oder **quadratisch** bestraft, und
 entweder in **absoluten Gramm** oder **relativ** zur Basismenge gemessen - macht **vier Varianten**.
 Linear entspricht mathematisch einer **L1-Strafe**: Ecken-Lösungen mit vielen exakt unveränderten
 Variablen sind optimal (wie bei LASSO-Regression, wo L1-Regularisierung dünn besetzte Lösungen
-erzeugt). Quadratisch entspricht einer **L2-Strafe**: der Grenznutzen einer kleinen Änderung ist bei
+erzeugt). Quadratisch entspricht einer **L2-Strafe**: die Grenzkosten einer kleinen Änderung sind bei
 $x_i = \\text{baseline}_i$ null, sodass sich die Anpassung über viele Lebensmittel verteilt (wie bei
 Ridge-Regression). Schäfer et al. (2025) fanden empirisch genau dieses Muster: In ihren
 linear-relativen Modellen blieben 206-218 von 255 Lebensmittelgruppen unverändert, in den
@@ -280,10 +281,12 @@ aus dem nicht-linearen Betrag ein Standard-lineares Programm (siehe `solve_linea
 `nutrition_solver.py`).
 
 **Warum linear dünnbesetzte Lösungen erzeugt:** Am Optimum eines LP liegt die Lösung an einer
-Ecke des zulässigen Polyeders. Für die absolute-Betrags-Zielfunktion bedeutet das: Lebensmittel,
-die keine bindende Nebenbedingung berühren, bleiben exakt bei $x_i = \text{baseline}_i$ (Grenznutzen
-einer Änderung ist konstant $\pm 1/r_i$, es gibt keinen Anreiz, mehr als nötig zu ändern) - nur so
-viele Lebensmittel wie für die Erfüllung der Nährstoffziele nötig werden überhaupt angefasst.
+Ecke des zulässigen Polyeders. Für die Betrags-Zielfunktion bedeutet das: Lebensmittel, die
+keine bindende Nebenbedingung berühren, bleiben exakt bei $x_i = \text{baseline}_i$ (die
+Grenzkosten einer Änderung sind konstant, $\pm 1$ bei absoluter und $\pm 1/r_i$ bei relativer
+Bewertung, es gibt keinen Anreiz, mehr als nötig zu ändern). Verändert werden höchstens so viele
+Lebensmittel, wie Nährstoffbedingungen bindend sind (hier höchstens 7), plus die Lebensmittel, die an
+einer ihrer Mengengrenzen (0 g oder Obergrenze) liegen.
 Das ist strukturell identisch mit der Sparsamkeits-Eigenschaft von **L1-Regularisierung** (LASSO).
 
 **Warum quadratisch alles ein bisschen ändert:** Die quadratische Zielfunktion hat am Punkt $x_i =
@@ -297,9 +300,10 @@ dünnbesetzte Lösungen erzeugt.
 Nährwertkoeffizienten auf. `nutrition_solver.py` setzt die Formulierungen oben 1:1 um:
 `solve_linear()` (SciPy `linprog`, HiGHS) für die linearen Varianten, `solve_quadratic()` (SciPy
 `minimize`, SLSQP mit trust-constr als Fallback) für die quadratischen. `nutrition_evaluation.py`
-berechnet die Vergleichskennzahlen (Summe absoluter/relativer Änderung, Anzahl unverändert/
-gestiegen/gesunken/verschwunden) - dieselben Kennzahlen, die Schäfer et al. (2025) zum Vergleich
-ihrer zwölf Modellvarianten verwendet haben.
+berechnet die Vergleichskennzahlen (Summe absoluter und mittlere relative Änderung, Anzahl
+unverändert/gestiegen/gesunken/verschwunden), angelehnt an die Kennzahlen, mit denen Schäfer et al.
+(2025) ihre zwölf Modellvarianten verglichen haben (4 Zielfunktionen x 3 Nährstoffzielsets - die
+Demo bildet nur die vier Zielfunktionen ab).
 
 **Quelle:** Schäfer AC, Boeing H, Gazan R, et al. (2025) *A methodological framework for deriving
 the German food-based dietary guidelines 2024: Food groups, nutrient goals, and objective
