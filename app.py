@@ -94,7 +94,7 @@ with preset_col3:
     st.button(
         "🏋️ Muskelaufbau (85 kg)", width="stretch",
         on_click=apply_preset, args=("Muskelaufbau (Kalorienüberschuss)", 85.0, 0.25, 3),
-        help="Kalorienüberschuss, hoher Proteinanteil - stärkere Abweichung von der Ist-Ernährung.",
+        help="Kalorienüberschuss (Protein wie bei Erhaltung: 1,8 g je kg, aber nur etwa 19 % der Kalorien) - stärkere Abweichung von der Ist-Ernährung.",
     )
 
 st.caption(
@@ -282,7 +282,7 @@ aus dem nicht-linearen Betrag ein Standard-lineares Programm (siehe `solve_linea
 **Warum linear dünnbesetzte Lösungen erzeugt:** Am Optimum eines LP liegt die Lösung an einer
 Ecke des zulässigen Polyeders. Für die absolute-Betrags-Zielfunktion bedeutet das: Lebensmittel,
 die keine bindende Nebenbedingung berühren, bleiben exakt bei $x_i = \text{baseline}_i$ (Grenznutzen
-einer Änderung ist konstant $\pm 1/r_i$, es gibt keinen Anreiz, mehr als nötig zu ändern) - nur so
+einer Änderung ist konstant $\pm 1$ bzw. bei relativer Bewertung $\pm 1/r_i$, es gibt keinen Anreiz, mehr als nötig zu ändern) - nur so
 viele Lebensmittel wie für die Erfüllung der Nährstoffziele nötig werden überhaupt angefasst.
 Das ist strukturell identisch mit der Sparsamkeits-Eigenschaft von **L1-Regularisierung** (LASSO).
 
@@ -310,6 +310,6 @@ functions.* PLoS ONE 20(3): e0313347. https://doi.org/10.1371/journal.pone.03133
 st.markdown("---")
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
-    "Operations Research und Machine Learning. Interesse an einer maßgeschneiderten Lösung für "
-    "Ihr Unternehmen? [Kontakt aufnehmen](https://sebastianhanisch.net/kontakt.html)"
+    "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
+    "Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html)."
 )
