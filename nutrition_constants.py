@@ -8,6 +8,14 @@ medizinische oder ernährungswissenschaftliche Beratung.
 
 from collections import namedtuple
 
+# Referenzmenge (g) für die relative Gewichtung bei Lebensmitteln, die in der
+# Basis-Ernährung mit 0 g auftreten - eine echte relative Abweichung (x/0) ist
+# dort nicht definiert, 20 g dient als plausibler unterer Referenzwert. Gilt
+# einheitlich für die relativen Zielfunktionen UND die Kennzahl
+# "Mittl. rel. Änderung (%)" (nutrition_evaluation.py), damit beide dieselbe
+# Referenz verwenden.
+MIN_REFERENCE_G = 20.0
+
 Food = namedtuple("Food", ["name", "category", "kcal", "protein", "carbs", "fat", "baseline_g", "max_g"])
 
 # name, category, kcal/100g, protein/100g, carbs/100g, fat/100g, Basismenge (g/Tag), Akzeptanzobergrenze (g/Tag)

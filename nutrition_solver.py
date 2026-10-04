@@ -8,12 +8,10 @@ from collections import namedtuple
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, linprog, minimize
 
+from nutrition_constants import MIN_REFERENCE_G
+
 SolveResult = namedtuple("SolveResult", ["x", "objective", "status", "success"])
 
-# Referenzmenge (g) für die relative Gewichtung bei Lebensmitteln, die in der
-# Basis-Ernährung mit 0 g auftreten - eine echte relative Abweichung (x/0) ist
-# dort nicht definiert, 20 g dient als plausibler unterer Referenzwert.
-MIN_REFERENCE_G = 20.0
 
 
 def _reference(baseline):
